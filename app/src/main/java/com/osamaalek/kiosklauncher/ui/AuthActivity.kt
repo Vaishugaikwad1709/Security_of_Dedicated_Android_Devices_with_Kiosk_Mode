@@ -49,7 +49,9 @@ class AuthActivity : AppCompatActivity() {
                 val launchIntent = packageManager.getLaunchIntentForPackage(packageName)
                 startActivity(launchIntent)
             } else {
-                KioskUtil.startKioskMode(this)
+                // Start MainActivity after successful authentication
+                val mainIntent = Intent(this, MainActivity::class.java)
+                startActivity(mainIntent)
             }
         }
         finish()

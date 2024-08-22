@@ -1,68 +1,58 @@
 package com.osamaalek.kiosklauncher.util
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.admin.DevicePolicyManager
-import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
-import android.os.UserManager
-import android.widget.Toast
-import com.osamaalek.kiosklauncher.MyDeviceAdminReceiver
-import com.osamaalek.kiosklauncher.ui.MainActivity
+import android.os.Build
+import androidx.appcompat.app.AppCompatActivity
+import com.osamaalek.kiosklauncher.ui.AuthActivity
 
-class KioskUtil {
-    companion object {
-        fun startKioskMode(context: Activity) {
-            val devicePolicyManager =
-                context.getSystemService(Context.DEVICE_POLICY_SERVICE) as DevicePolicyManager
-            val myDeviceAdmin = ComponentName(context, MyDeviceAdminReceiver::class.java)
+object KioskUtil {
 
-            if (devicePolicyManager.isAdminActive(myDeviceAdmin)) {
-                context.startLockTask()
-            } else {
-                context.startActivity(
-                    Intent().setComponent(
-                        ComponentName(
-                            "com.android.settings", "com.android.settings.DeviceAdminSettings"
-                        )
-                    )
-                )
-            }
-            if (devicePolicyManager.isDeviceOwnerApp(context.packageName)) {
-                val filter = IntentFilter(Intent.ACTION_MAIN)
-                filter.addCategory(Intent.CATEGORY_HOME)
-                filter.addCategory(Intent.CATEGORY_DEFAULT)
-                val activity = ComponentName(context, MainActivity::class.java)
-                devicePolicyManager.addPersistentPreferredActivity(myDeviceAdmin, filter, activity)
-
-                //
-                val appsWhiteList = arrayOf("com.osamaalek.kiosklauncher")
-                devicePolicyManager.setLockTaskPackages(myDeviceAdmin, appsWhiteList)
-
-                devicePolicyManager.addUserRestriction(
-                    myDeviceAdmin, UserManager.DISALLOW_UNINSTALL_APPS
-                )
-
-            } else {
-                Toast.makeText(
-                    context, "This app is not an owner device", Toast.LENGTH_SHORT
-                ).show()
-            }
+    fun startKioskMode(activity: AppCompatActivity) {
+        if (!isKioskModeEnabled(activity)) {
+            lockDevice(activity)
+            val intent = Intent(activity, AuthActivity::class.java)
+            intent.putExtra("EXIT_KIOSK_MODE", false)
+            activity.startActivity(intent)
         }
+    }
 
-        fun stopKioskMode(context: Activity) {
-            val devicePolicyManager =
-                context.getSystemService(Context.DEVICE_POLICY_SERVICE) as DevicePolicyManager
-            val myDeviceAdmin = ComponentName(context, MyDeviceAdminReceiver::class.java)
-            if (devicePolicyManager.isAdminActive(myDeviceAdmin)) {
-                context.stopLockTask()
+    fun stopKioskMode(activity: AppCompatActivity) {
+        if (isKioskModeEnabled(activity)) {
+            unlockDevice(activity)
+            val intent = Intent(activity, AuthActivity::class.java)
+            intent.putExtra("EXIT_KIOSK_MODE", true)
+            activity.startActivity(intent)
+        }
+    }
+
+    private fun isKioskModeEnabled(activity: Activity): Boolean {
+        val dpm = activity.getSystemService(Context.DEVICE_POLICY_SERVICE) as DevicePolicyManager
+        return dpm.isLockTaskPermitted(activity.packageName)
+    }
+
+    @SuppressLint("NewApi")
+    private fun lockDevice(activity: Activity) {
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                activity.startLockTask()
             }
-            if (devicePolicyManager.isDeviceOwnerApp(context.packageName)) {
-                devicePolicyManager.clearUserRestriction(
-                    myDeviceAdmin, UserManager.DISALLOW_UNINSTALL_APPS
-                )
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    @SuppressLint("NewApi")
+    private fun unlockDevice(activity: Activity) {
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                activity.stopLockTask()
             }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 }

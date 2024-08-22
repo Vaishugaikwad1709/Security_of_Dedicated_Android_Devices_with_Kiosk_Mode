@@ -16,6 +16,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.KioskLauncher"
         tools:targetApi="31">
+
+        <!-- Declaration of MainActivity -->
         <activity
             android:name=".ui.MainActivity"
             android:clearTaskOnLaunch="true"
@@ -26,13 +28,18 @@
             android:stateNotNeeded="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
                 <category android:name="android.intent.category.HOME" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
 
+        <!-- Declaration of AuthActivity -->
+        <activity
+            android:name=".ui.AuthActivity"
+            android:exported="true" />
+
+        <!-- Device Admin Receiver -->
         <receiver
             android:name=".MyDeviceAdminReceiver"
             android:exported="true"
@@ -40,7 +47,6 @@
             <intent-filter>
                 <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
             </intent-filter>
-
             <meta-data
                 android:name="android.app.device_admin"
                 android:resource="@xml/device_admin_conf" />

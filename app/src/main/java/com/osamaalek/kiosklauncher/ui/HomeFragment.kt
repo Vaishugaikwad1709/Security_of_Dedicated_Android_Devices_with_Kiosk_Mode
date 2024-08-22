@@ -1,5 +1,6 @@
 package com.osamaalek.kiosklauncher.ui
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,7 +9,6 @@ import android.widget.ImageButton
 import androidx.fragment.app.Fragment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.osamaalek.kiosklauncher.R
-import com.osamaalek.kiosklauncher.util.KioskUtil
 
 class HomeFragment : Fragment() {
 
@@ -18,7 +18,6 @@ class HomeFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         val v = inflater.inflate(R.layout.fragment_home, container, false)
 
         fabApps = v.findViewById(R.id.floatingActionButton)
@@ -30,10 +29,12 @@ class HomeFragment : Fragment() {
         }
 
         imageButtonExit.setOnClickListener {
-            KioskUtil.stopKioskMode(requireActivity())
+            // Launch AuthActivity to authenticate before exiting kiosk mode
+            val intent = Intent(requireContext(), AuthActivity::class.java)
+            intent.putExtra("EXIT_KIOSK_MODE", true)
+            startActivity(intent)
         }
 
         return v
     }
-
 }
