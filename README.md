@@ -18,18 +18,3 @@ To exit kiosk mode, follow these steps:
 1. Tap on the exit button on the top right corner of the home screen.
 2. Enter your password and tap on OK.
 3. Tap on the stop button to deactivate kiosk mode.
-
-## Article
-
-If you want to learn more about the technical details and the design process of this project, you can read my article on Medium:
-
-https://medium.com/@osamaalek/how-to-build-a-kiosk-launcher-for-android-part-1-beb54476da56
-https://medium.com/@osamaalek/how-to-build-a-kiosk-launcher-for-android-part-2-9a529f503c11
-
-## License
-
-Kiosk Launcher is licensed under the Apache License 2.0. See [LICENSE](https://github.com/osamaalek/Kiosk-Launcher/blob/master/LICENSE) for more details.
-
-## Contact
-
-If you have any questions, feedback, or suggestions, feel free to contact me at osamaalek@gmail.com or open an issue on GitHub.
